@@ -1,5 +1,6 @@
 package zenrus.com.container.report;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class Report {
         InputStream inputStream = new FileInputStream(new File(excelFilePath));
        
       
-        Workbook workbook = WorkbookFactory.create(inputStream);
+        Workbook workbook = WorkbookFactory.create(new BufferedInputStream(inputStream));
         
         Sheet firstSheet = workbook.getSheetAt(0);
         Iterator<Row> iterator = firstSheet.iterator();
