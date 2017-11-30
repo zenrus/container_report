@@ -6,7 +6,7 @@
     <session-factory>
         <!-- Database connection settings -->
         <property name="connection.driver_class">org.hsqldb.jdbcDriver</property>
-        <property name="connection.url">jdbc:hsqldb:file:~/db/brw;shutdown=true</property>
+        <property name="connection.url">jdbc:hsqldb:file:db/brw;shutdown=true</property>
      
         <property name="connection.username">SA</property>
         <property name="connection.password"></property>
