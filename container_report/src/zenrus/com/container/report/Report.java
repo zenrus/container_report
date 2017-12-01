@@ -1,5 +1,10 @@
 package zenrus.com.container.report;
 
+import java.io.FileOutputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -12,6 +17,7 @@ import zenrus.com.container.persistance.InputControl;
 
 public class Report {
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws ApplicationException {
 		try{
 			setUp();
@@ -20,9 +26,23 @@ public class Report {
 			//readExcel("C:/123.xls");
 			InputControl.saveAll(fileReader.test("C:/excel"));
 			
+			
+			try( FileOutputStream fileOut = new FileOutputStream("C:/report.xls");){
+				  Workbook wb = new HSSFWorkbook();
+				  Sheet sheet = wb.createSheet("Отчет");
+				  ReportBuilder reportBuilder = new ReportBuilder(wb, sheet);
+				  reportBuilder.buildHeader();
+				  
+				  wb.write(fileOut);
+				  fileOut.flush();
+			}catch (Exception e) {
+				e.printStackTrace();
+				throw new ApplicationException("Error write to file", e);
+			}
+			
 		}catch (Exception e) {
-			e.printStackTrace();// TODO: handle exception
-			throw new ApplicationException(e);
+			e.printStackTrace();
+			throw new ApplicationException("Error", e);
 		}
 	}
 

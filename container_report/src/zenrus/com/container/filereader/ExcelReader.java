@@ -44,7 +44,7 @@ public class ExcelReader {
 		      
 	        Sheet firstSheet = workbook.getSheetAt(0);
 	        Iterator<Row> iterator = firstSheet.iterator();
-	        Map<String, ExcelField> mapColumn = ExcelControl.getMapFieldExcel(beanClass); 
+	        Map<String, ExcelField> mapColumn = ExcelControl.getMapExcelToFieldExcel(beanClass); 
 	        FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 	        int indexRow = 0; 
 	        while (iterator.hasNext()) {

@@ -2,8 +2,13 @@ package zenrus.com.container.exception;
 
 public class ApplicationException extends Exception{
 
-	public ApplicationException(Exception e) {
-		super(e);
+	public ApplicationException(String string) {
+		super(string);
+	}
+
+	public ApplicationException(String string, Exception e) {
+		e.printStackTrace();
+		new ApplicationException(string);
 	}
 
 	/**

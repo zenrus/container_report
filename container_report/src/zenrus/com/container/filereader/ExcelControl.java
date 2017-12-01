@@ -24,7 +24,7 @@ public class ExcelControl {
 		List<InputBean> beans = new ArrayList<InputBean>();
 	
 		try {
-			Map<String, ExcelField> mapColumn = getMapFieldExcel(InputBean.class);
+			Map<String, ExcelField> mapColumn = getMapExcelToFieldExcel(InputBean.class);
 			List<Map<String,Object>> excelRows = ExcelReader.readExcel(excelFile, 2, InputBean.class);
 			
 			String fileName = excelFile.getName();
@@ -91,7 +91,7 @@ public class ExcelControl {
 		
 	}
 
-	public static Map<String,ExcelField> getMapFieldExcel(Class<?> clazz){
+	public static Map<String,ExcelField> getMapExcelToFieldExcel(Class<?> clazz){
 		Map<String,ExcelField> result = new HashMap<String,ExcelField>();
 		
 		for(Field field : clazz.getDeclaredFields()){
@@ -109,4 +109,25 @@ public class ExcelControl {
 		return result;
 		
 	}
+	
+	public static Map<String,ExcelField> getMapBeanToFieldExcel(Class<?> clazz){
+		Map<String,ExcelField> result = new HashMap<String,ExcelField>();
+		
+		for(Field field : clazz.getDeclaredFields()){
+			ExcelField excelField = new ExcelField();
+			ExcelColumn excelColumn = field.getDeclaredAnnotation(ExcelColumn.class);
+			if(excelColumn != null){
+				excelField.setColumnIndex(excelColumn.numberColumn());
+				excelField.setDate(excelColumn.isDate());
+				excelField.setName(excelColumn.name());
+				excelField.setBeanFieldName(field.getName());
+				result.put(field.getName(), excelField);
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
 }

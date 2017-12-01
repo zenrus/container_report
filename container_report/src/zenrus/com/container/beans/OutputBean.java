@@ -3,105 +3,83 @@ package zenrus.com.container.beans;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 import zenrus.com.container.annotation.ExcelColumn;
 
-@Entity
-@Table(name = "INPUT")
-public class InputBean {
+public class OutputBean {
 
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return idInput + " " + containerNumber +" " + length; 
-	}
-	
-	@Id
-	@Column(name = "ID_INPUT")
-	@GeneratedValue
 	private Integer idInput;
 	
-	@Column(name = "REPORT_DATE")
 	private Date reportDate;
 
-	@Column(name = "TITLE_TRAIN")
 	private String titleTrain;
 	
-	@Column(name = "NN")
 	@ExcelColumn(name = "№ п/п")
 	private Integer number;
 	
-	@Column(name = "CONTAINER_NUMBER")
-	@ExcelColumn(name = "Контейнер")
+	@ExcelColumn(name = "№ контейнера")
 	private String containerNumber;
 	
-	@Column(name = "CONTAINER_TYPE")
-	@ExcelColumn(name = "Тип")
 	private Integer containerType;
 	
-	@Column(name = "PRIZNOK_POGRUZKI")
-	@ExcelColumn(name = "Гр/пор")
 	private String fillingContainer;
 	
-	@Column(name = "SMSG")
-	@ExcelColumn(name = "СМГС")
 	private String smgs;
 	
 	@Column(name = "GETTING_ON")
-	@ExcelColumn(name = "Принят на БЧ", isDate = true)
+	@ExcelColumn(name = "Дата прибытия на ст. Брест", isDate = true)
 	private Date gettingOnBrw;
 	
-	@Column(name = "PPV")
-	@ExcelColumn(name = "ППВ")
 	private Integer ppv;
 	
-	@Column(name = "STA_LOADING")
-	@ExcelColumn(name = "Ст.отправления")
+	@ExcelColumn(name = "Станция отправления")
 	private String staLoading;
-	
-	@Column(name = "STA_DIRECTION")
-	@ExcelColumn(name = "Ст.назначения")
+
+	@ExcelColumn(name = "Станция назначения")
 	private String staDirection;
 	
-	@Column(name = "VAGON_NUMBER")
-	@ExcelColumn(name = "Вагон")
+	@ExcelColumn(name = "№ платформы БТЛЦ")
 	private String vagonNumber;
 	
-	@Column(name = "PRIN")
-	@ExcelColumn(name = "Прин.")
 	private Integer prin;
 	
-	@Column(name = "LENGTH")
-	@ExcelColumn(name = "Усл.длина")
 	private Double length;
 	
-	@Column(name = "DATE_RELOADING")
-	@ExcelColumn(name = "Перегружен", isDate = true)
 	private Date dateReloading;
 	
-	@Column(name = "NUMBER_TRAIN")
-	@ExcelColumn(name = "№ поезда")
 	private Integer numberTrain;
-	
-	@Column(name = "INDEX_TRAIN")
-	@ExcelColumn(name = "Индекс поезда")
+
 	private String indexTrain;
 	
-	@Column(name = "DEPARTURE")
-	@ExcelColumn(name = "Отправлен", isDate = true)
+	@ExcelColumn(name = "Дата отправления до ст. Достык ", isDate = true)
 	private Date departure;
 	
-	@Column(name = "OWNER")
-	@ExcelColumn(name = "Владелец")
 	private String owner;
 	
-	@Column(name = "OPERATOR")
-	@ExcelColumn(name = "Оператор")
 	private String operator;
+	
+	@ExcelColumn(name = "Вознаграждение за доп.услуги по Бресту, USD")
+	private Double feeAdditionalServices = 2.00d;
+	
+	@ExcelColumn(name = "Кол-во суток работы фитинговой платформы БТЛЦ")
+	private Integer daysWorkBtlc;
+	
+	@ExcelColumn(name = "Вознаграждение за перевозки с использованием фит. Платформ БТЛЦ , USD")
+	private Double feeBtlc;
+	
+	@ExcelColumn(name = "Вознаграждение за организацию и формирование КП, USD")
+	private Double feeFormingKp;
+	
+	@ExcelColumn(name = "Итого, USD")
+	private Double feeTotal;
+
+	public Integer getIdInput() {
+		return idInput;
+	}
+
+	public void setIdInput(Integer idInput) {
+		this.idInput = idInput;
+	}
 
 	public Date getReportDate() {
 		return reportDate;
@@ -263,9 +241,44 @@ public class InputBean {
 		this.operator = operator;
 	}
 
-	public void setIdInput(Integer idInput) {
-		this.idInput = idInput;
+	public Double getFeeAdditionalServices() {
+		return feeAdditionalServices;
 	}
-	
+
+	public void setFeeAdditionalServices(Double feeAdditionalServices) {
+		this.feeAdditionalServices = feeAdditionalServices;
+	}
+
+	public Integer getDaysWorkBtlc() {
+		return daysWorkBtlc;
+	}
+
+	public void setDaysWorkBtlc(Integer daysWorkBtlc) {
+		this.daysWorkBtlc = daysWorkBtlc;
+	}
+
+	public Double getFeeBtlc() {
+		return feeBtlc;
+	}
+
+	public void setFeeBtlc(Double feeBtlc) {
+		this.feeBtlc = feeBtlc;
+	}
+
+	public Double getFeeFormingKp() {
+		return feeFormingKp;
+	}
+
+	public void setFeeFormingKp(Double feeFormingKp) {
+		this.feeFormingKp = feeFormingKp;
+	}
+
+	public Double getFeeTotal() {
+		return feeTotal;
+	}
+
+	public void setFeeTotal(Double feeTotal) {
+		this.feeTotal = feeTotal;
+	}
 	
 }
