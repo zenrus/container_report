@@ -1,20 +1,12 @@
 package zenrus.com.container.report;
 
-import org.hibernate.SessionFactory;
+import org.hibernate.Session;
 
 public class Environment {
 
 	private static Environment instance;
 	
-	private SessionFactory sessionFactory;
-	
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+	private Session session;
 
 	public static Environment getInstance() {
 		if(instance == null){
@@ -22,5 +14,12 @@ public class Environment {
 		}
 		return instance;
 	}
+	
+	public Session getSession() {
+		return session;
+	}
 
+	public void setSession(Session session) {
+		this.session = session;
+	}
 }

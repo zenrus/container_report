@@ -9,6 +9,8 @@ public class ExcelField {
 	private int columnIndex;
 	
 	private String beanFieldName;
+	
+	private int width;
 
 	public String getName() {
 		return name;
@@ -40,6 +42,14 @@ public class ExcelField {
 
 	public void setBeanFieldName(String beanFieldName) {
 		this.beanFieldName = beanFieldName;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
 	}
 	
 	

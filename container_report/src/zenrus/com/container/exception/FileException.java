@@ -11,9 +11,6 @@ public class FileException extends Exception{
 		new FileException(string);
 	}
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7923748255785481241L;
 
 	

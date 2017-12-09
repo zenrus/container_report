@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -29,10 +31,11 @@ import zenrus.com.container.exception.FileException;
 
 public class ExcelReader {
 
-	
-	
+	private static final Logger LOG = LogManager.getLogger( ExcelReader.class );
 	
 	private static final String DATE_INPUT_FILE_FORMAT = "dd.MM.yyyy HH:mm";
+	private static final String DATE_INPUT_FILE_FORMAT2 = "dd/MM/yyyy H:mm";
+	
 
 	protected static List<Map<String,Object>> readExcel(File file, int headerRow, Class<?> beanClass) throws IOException, EncryptedDocumentException, InvalidFormatException {
 		
@@ -96,25 +99,24 @@ public class ExcelReader {
 				return cellValue.getBooleanValue();
 			case NUMERIC:
 				Double cellDoubleValue = cellValue.getNumberValue();
-//				if (date){
-					if (DateUtil.isValidExcelDate(cellDoubleValue)) {
-						return DateUtil.getJavaDate(cellDoubleValue);
-					} else {
-						
-						return cellDoubleValue;
-//						throw new FileException("Invalid date value");
-					}
-//				} else {
-//					return cellDoubleValue;
-//				}
+				if (DateUtil.isValidExcelDate(cellDoubleValue)) {
+					return DateUtil.getJavaDate(cellDoubleValue);
+				} else {
+					return cellDoubleValue;
+				}
 			case STRING:
 				if(date){
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_INPUT_FILE_FORMAT);
+					SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat(DATE_INPUT_FILE_FORMAT2);
 					try {
 						return simpleDateFormat.parse(cellValue.getStringValue());
 					} catch (ParseException e) {
-						System.out.println("Date parse ERROR '" +  cellValue.getStringValue()+"'  format = " + DATE_INPUT_FILE_FORMAT);
-						return null;
+						try {
+							return simpleDateFormat2.parse(cellValue.getStringValue());
+						}catch (ParseException e2) {
+							LOG.error("Date parse ERROR '" +  cellValue.getStringValue()+"'  format = " + DATE_INPUT_FILE_FORMAT, e2);
+							return null;
+						}
 					}
 				}else{
 					return replaceUmlauts(cellValue.getStringValue());
@@ -147,7 +149,6 @@ public class ExcelReader {
 	protected static Object getCellValue(Cell cell, boolean date, FormulaEvaluator evaluator) throws FileException{
 		if (cell != null) {
 			CellValue cellValue = evaluator.evaluate(cell);
-//			System.out.println("yyyyyy " +cellValue.getCellTypeEnum());
 			return getCellValue(cellValue, date);
 		} else {
 			return null;

@@ -3,71 +3,97 @@ package zenrus.com.container.beans;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import zenrus.com.container.annotation.ExcelColumn;
 
+@Entity
+@Table(name = "INPUT")
 public class OutputBean {
 
+	@Id
+	@Column(name = "ID_INPUT")
 	private Integer idInput;
 	
+	@Column(name = "REPORT_DATE")
 	private Date reportDate;
 
+	@Column(name = "TITLE_TRAIN")
 	private String titleTrain;
 	
-	@ExcelColumn(name = "№ п/п")
+	@Column(name = "NN")
+	@ExcelColumn(name = "№ п/п", width= 2)
 	private Integer number;
 	
-	@ExcelColumn(name = "№ контейнера")
+	@Column(name = "CONTAINER_NUMBER")
+	@ExcelColumn(name = "№ контейнера", width= 8)
 	private String containerNumber;
 	
+	@Column(name = "CONTAINER_TYPE")
 	private Integer containerType;
 	
+	@Column(name = "PRIZNOK_POGRUZKI")
 	private String fillingContainer;
 	
+	@Column(name = "SMSG")
 	private String smgs;
 	
 	@Column(name = "GETTING_ON")
-	@ExcelColumn(name = "Дата прибытия на ст. Брест", isDate = true)
+	@ExcelColumn(name = "Дата прибытия на ст. Брест", isDate = true, width = 8)
 	private Date gettingOnBrw;
 	
+	@Column(name = "PPV")
 	private Integer ppv;
 	
-	@ExcelColumn(name = "Станция отправления")
+	@Column(name = "STA_LOADING")
+	@ExcelColumn(name = "Станция отправления", width = 8)
 	private String staLoading;
 
-	@ExcelColumn(name = "Станция назначения")
+	@Column(name = "STA_DIRECTION")
+	@ExcelColumn(name = "Станция назначения", width = 8)
 	private String staDirection;
 	
-	@ExcelColumn(name = "№ платформы БТЛЦ")
+	@Column(name = "VAGON_NUMBER")
+	@ExcelColumn(name = "№ платформы БТЛЦ", width = 8)
 	private String vagonNumber;
 	
+	@Column(name = "PRIN")
 	private Integer prin;
 	
+	@Column(name = "LENGTH")
 	private Double length;
 	
+	@Column(name = "DATE_RELOADING")
 	private Date dateReloading;
 	
+	@Column(name = "NUMBER_TRAIN")
 	private Integer numberTrain;
 
+	@Column(name = "INDEX_TRAIN")
 	private String indexTrain;
 	
-	@ExcelColumn(name = "Дата отправления до ст. Достык ", isDate = true)
+	@Column(name = "DEPARTURE")
+	@ExcelColumn(name = "Дата отправления до ст. Достык ", isDate = true, width = 8)
 	private Date departure;
 	
+	@Column(name = "OWNER")
 	private String owner;
 	
+	@Column(name = "OPERATOR")
 	private String operator;
 	
-	@ExcelColumn(name = "Вознаграждение за доп.услуги по Бресту, USD")
-	private Double feeAdditionalServices = 2.00d;
+	@ExcelColumn(name = "Вознаграждение за доп.услуги по Бресту, USD", width = 8)
+	private Double feeAdditionalServices = 25.00d;
 	
-	@ExcelColumn(name = "Кол-во суток работы фитинговой платформы БТЛЦ")
+	@ExcelColumn(name = "Кол-во суток работы фитинговой платформы БТЛЦ", width = 10)
 	private Integer daysWorkBtlc;
 	
-	@ExcelColumn(name = "Вознаграждение за перевозки с использованием фит. Платформ БТЛЦ , USD")
+	@ExcelColumn(name = "Вознаграждение за перевозки с использованием фит. Платформ БТЛЦ , USD", width = 10)
 	private Double feeBtlc;
 	
-	@ExcelColumn(name = "Вознаграждение за организацию и формирование КП, USD")
+	@ExcelColumn(name = "Вознаграждение за организацию и формирование КП, USD", width = 10)
 	private Double feeFormingKp;
 	
 	@ExcelColumn(name = "Итого, USD")

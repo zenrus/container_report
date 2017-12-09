@@ -11,4 +11,5 @@ public @interface ExcelColumn {
 	public String name();
 	public int numberColumn() default -1;
 	public boolean isDate() default false;
+	public int width() default 15;
 }

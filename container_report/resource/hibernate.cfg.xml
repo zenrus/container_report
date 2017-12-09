@@ -30,5 +30,6 @@
         
         <!-- Mapping files -->
        <mapping class="zenrus.com.container.beans.InputBean" /> 
+       <mapping class="zenrus.com.container.beans.OutputBean" /> 
     </session-factory>
 </hibernate-configuration>

@@ -2,41 +2,42 @@ package zenrus.com.container.report;
 
 import java.io.FileOutputStream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import zenrus.com.container.exception.ApplicationException;
-import zenrus.com.container.exception.DbException;
 import zenrus.com.container.filereader.FileReader;
-import zenrus.com.container.persistance.InputControl;
+import zenrus.com.container.persistance.HibernateUtil;
+import zenrus.com.container.persistance.HibernateControl;
 
 public class Report {
 
-	@SuppressWarnings("resource")
+	private static final Logger LOG = LogManager.getLogger( Report.class );
+	
 	public static void main(String[] args) throws ApplicationException {
-		try{
-			setUp();
+		try(SessionFactory sf = HibernateUtil.getSessionFactory();
+				Session session = sf.openSession();){
+			Environment.getInstance().setSession(session);
 			FileReader fileReader = new FileReader();
 			
 			//readExcel("C:/123.xls");
-			InputControl.saveAll(fileReader.test("C:/excel"));
-			
+			HibernateControl.saveAll(fileReader.test("C:/excel"));
 			
 			try( FileOutputStream fileOut = new FileOutputStream("C:/report.xls");){
 				  Workbook wb = new HSSFWorkbook();
 				  Sheet sheet = wb.createSheet("Отчет");
-				  ReportBuilder reportBuilder = new ReportBuilder(wb, sheet);
-				  reportBuilder.buildHeader();
+				  ReportContainersBuilder reportBuilder = new ReportContainersBuilder(wb, sheet);
+				  reportBuilder.build();
 				  
 				  wb.write(fileOut);
 				  fileOut.flush();
 			}catch (Exception e) {
-				e.printStackTrace();
+				LOG.error("Error write to file", e);
 				throw new ApplicationException("Error write to file", e);
 			}
 			
@@ -45,31 +46,5 @@ public class Report {
 			throw new ApplicationException("Error", e);
 		}
 	}
-
-	protected static void setUp() throws Exception {
-		
-		// A SessionFactory is set up once for an application!
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
-		SessionFactory sf = null;
-		try {
-			sf = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
-			Environment environment = Environment.getInstance();
-			environment.setSessionFactory(sf);
-		}
-		catch (Exception e) {
-			// The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-			// so destroy it manually.
-			if(sf != null){
-				sf.close();
-			}
-			e.printStackTrace();
-			StandardServiceRegistryBuilder.destroy( registry );
-			throw new DbException("Can't init DB");
-		}
-	}
-	
-
 	
 }

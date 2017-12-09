@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
@@ -20,6 +22,9 @@ import zenrus.com.container.exception.FileException;
 
 public class ExcelControl {
 
+	
+	private static final Logger LOG = LogManager.getLogger( ExcelControl.class );
+	
 	public static List<InputBean> readInputfile(File excelFile) throws FileException{
 		List<InputBean> beans = new ArrayList<InputBean>();
 	
@@ -38,15 +43,13 @@ public class ExcelControl {
 					bean.setTitleTrain(titleTrain);
 					beans.add(bean);
 					
-					System.out.print(" row ");
+					LOG.debug(" row ");
 					for(String s : row.keySet()){
-						System.out.print( s + " = " + row.get(s) + ";\t" );
+						LOG.debug( s + " = " + row.get(s) + ";\t" );
 					}
-					System.out.println("");
+					LOG.debug("");
 				}
 			}
-			
-			
 		
 		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
 			// TODO Auto-generated catch block
@@ -121,6 +124,7 @@ public class ExcelControl {
 				excelField.setDate(excelColumn.isDate());
 				excelField.setName(excelColumn.name());
 				excelField.setBeanFieldName(field.getName());
+				excelField.setWidth(excelColumn.width());
 				result.put(field.getName(), excelField);
 			}
 		}
