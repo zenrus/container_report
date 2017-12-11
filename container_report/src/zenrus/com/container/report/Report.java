@@ -19,16 +19,16 @@ public class Report {
 
 	private static final Logger LOG = LogManager.getLogger( Report.class );
 	
-	public static void main(String[] args) throws ApplicationException {
+	public static void main(String path,String fileName) throws ApplicationException {
 		try(SessionFactory sf = HibernateUtil.getSessionFactory();
 				Session session = sf.openSession();){
 			Environment.getInstance().setSession(session);
 			FileReader fileReader = new FileReader();
 			
 			//readExcel("C:/123.xls");
-			HibernateControl.saveAll(fileReader.test("C:/excel"));
+			HibernateControl.saveAll(fileReader.test(path));
 			
-			try( FileOutputStream fileOut = new FileOutputStream("C:/report.xls");){
+			try( FileOutputStream fileOut = new FileOutputStream(fileName);){
 				  Workbook wb = new HSSFWorkbook();
 				  Sheet sheet = wb.createSheet("Отчет");
 				  ReportContainersBuilder reportBuilder = new ReportContainersBuilder(wb, sheet);
@@ -45,6 +45,7 @@ public class Report {
 			e.printStackTrace();
 			throw new ApplicationException("Error", e);
 		}
+		
 	}
 	
 }

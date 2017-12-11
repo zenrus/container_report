@@ -42,8 +42,8 @@ public class ReportContainersBuilder {
 	
 	private static final String TOTAL_REPORT_TITLE = "Всего за ";
 	private static final String DATE_FORMAT = "dd/MM/yyyy hh:mm";
-	private static final double FEE_ADDITIONAL_SERVICE = 0.00d;
-	private static final double FEE_FORMING_KP = 0.00d;
+	private static final double FEE_ADDITIONAL_SERVICE = 25.00d;
+	private static final double FEE_FORMING_KP = 775.00d;
 	private static final String TOTAL_TRAIN_TITLE = "Итого за поезд";
 	private static final String REPORT_TITLE_0 = "ОТЧЕТ за октябрь 2017 к договору  от 10.08.2015 № КП 20/Д043"; 
 	private static final String REPORT_TITLE_1 = "о выполнении по поручению Клиента дополнительных транспортно-экспедиционных услуг  в Брестском железнодорожном узле"; 
