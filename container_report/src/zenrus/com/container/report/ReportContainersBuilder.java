@@ -113,8 +113,8 @@ public class ReportContainersBuilder {
 		csr.cloneStyleFrom(cs);
 		csr.setAlignment(HorizontalAlignment.RIGHT);
 		CellStyle csr2 = wb.createCellStyle();
-			csr.cloneStyleFrom(cs);
-			csr.setAlignment(HorizontalAlignment.RIGHT);
+			csr2.cloneStyleFrom(cs);
+			csr2.setAlignment(HorizontalAlignment.RIGHT);
  		for(int cellnum = 0; cellnum < REPORT_COLUMNS.length; cellnum++) {
  			cell = row.createCell(cellnum);
  			cell.setCellStyle(cs);
