@@ -104,25 +104,23 @@ public class ReportContainersBuilder {
 		font.setBold(true);
 		font.setFontHeight((short) (font.getFontHeight()+20));
 		doubleStyle.setFont(font);
-		
+		CellStyle csr = wb.createCellStyle();
+		csr.cloneStyleFrom(cs);
+		csr.setAlignment(HorizontalAlignment.RIGHT);
+		CellStyle csr2 = wb.createCellStyle();
+			csr.cloneStyleFrom(cs);
+			csr.setAlignment(HorizontalAlignment.RIGHT);
  		for(int cellnum = 0; cellnum < REPORT_COLUMNS.length; cellnum++) {
  			cell = row.createCell(cellnum);
- 			
  			cell.setCellStyle(cs);
  			if("number".equals(REPORT_COLUMNS[cellnum])) {
- 				CellStyle csr = wb.createCellStyle();
- 				csr.cloneStyleFrom(cs);
- 				csr.setAlignment(HorizontalAlignment.RIGHT);
  				cell.setCellStyle(csr);
 				cell.setCellValue(TOTAL_REPORT_CONT_TITLE + reportDate);
  			} else if("gettingOnBrw".equals(REPORT_COLUMNS[cellnum])) {	
  				cell.setCellValue(countOfContainers);
  			}else if("staLoading".equals(REPORT_COLUMNS[cellnum])) {		
  				cellTitle = cell;
- 				CellStyle csr = wb.createCellStyle();
- 				csr.cloneStyleFrom(cs);
- 				csr.setAlignment(HorizontalAlignment.RIGHT);
- 				cell.setCellStyle(csr);
+ 				cell.setCellStyle(csr2);
 				cell.setCellValue(TOTAL_REPORT_TITLE + reportDate);
  			}else if("daysWorkBtlc".equals(REPORT_COLUMNS[cellnum]) 
  					|| "feeAdditionalServices".equals(REPORT_COLUMNS[cellnum])
@@ -221,7 +219,25 @@ public class ReportContainersBuilder {
 		CellAddress feeBtlc = null;
 		CellAddress feeFormingKp = null;
 		List<Train> trains = HibernateControl.getTrains();
-	 	for(Train train : trains) {
+	 
+		CellStyle csR = wb.createCellStyle();
+		csR.cloneStyleFrom(doubleStyle);
+		csR.setFont(boldFont);
+		CellStyle titleStyle = wb.createCellStyle();
+		titleStyle.cloneStyleFrom(csR);
+		titleStyle.setAlignment(HorizontalAlignment.RIGHT);
+		
+		CellStyle csDate = wb.createCellStyle();
+		csDate.cloneStyleFrom(borderedStyle);
+		csDate.setAlignment(HorizontalAlignment.LEFT);
+		csDate.setDataFormat(createHelper.createDataFormat().getFormat(DATE_FORMAT));
+		
+		CellStyle csCal = wb.createCellStyle();
+		csCal.cloneStyleFrom(borderedStyle);
+		csCal.setAlignment(HorizontalAlignment.LEFT);
+		csCal.setDataFormat(createHelper.createDataFormat().getFormat(DATE_FORMAT));
+		
+		for(Train train : trains) {
 	 		short firstRow = rowNumber;
 	 		row = sheet.createRow(rowNumber++);
 	 		cell = row.createCell((short) 0);
@@ -259,7 +275,7 @@ public class ReportContainersBuilder {
 			 				cell.setCellType(CellType.NUMERIC);
 			 			}
 			 				Object value = PropertyUtils.getProperty(bean, this.mapBeanToExcel.get(REPORT_COLUMNS[cellnum]).getBeanFieldName());
-			 				setCellValue(cell, value);
+			 				setCellValue(cell, value, csDate, csCal);
 			 			
 			 		}
 		 		}
@@ -267,17 +283,12 @@ public class ReportContainersBuilder {
 	 		
 	 		row = sheet.createRow(rowNumber++);
 	 		totalRows.add(rowNumber-1);
+	 		
 	 		for(int cellnum = 0; cellnum < REPORT_COLUMNS.length; cellnum++) {
 	 			cell = row.createCell(cellnum);
-	 			CellStyle cs = wb.createCellStyle();
-	 			cs.cloneStyleFrom(doubleStyle);
-	 			cs.setFont(boldFont);
-	 			cell.setCellStyle(cs);
+	 			cell.setCellStyle(csR);
 	 			if("staDirection".equals(REPORT_COLUMNS[cellnum])) {
 	 				cell.setCellValue(TOTAL_TRAIN_TITLE);
-	 				CellStyle titleStyle = wb.createCellStyle();
-	 				titleStyle.cloneStyleFrom(cs);
-	 				titleStyle.setAlignment(HorizontalAlignment.RIGHT);
 	 				cell.setCellStyle(titleStyle);
 	 			}else if("daysWorkBtlc".equals(REPORT_COLUMNS[cellnum])) {
 	 				cell.setCellFormula("SUM("+new CellAddress(firstRow, cellnum).formatAsString()+":"+new CellAddress(rowNumber-2, cellnum).formatAsString()+")");
@@ -326,22 +337,15 @@ public class ReportContainersBuilder {
 		return formula;
 	}
 	
-	private void setCellValue(Cell cell, Object value) {
+	private void setCellValue(Cell cell, Object value, CellStyle csDate, CellStyle csCal ) {
 		if(value != null) {
 			if(value instanceof String) {
 				cell.setCellValue((String) value );
 			}else if(value instanceof Date) {
-				CellStyle cs = wb.createCellStyle();
-				cs.cloneStyleFrom(cell.getCellStyle());
-				cs.setAlignment(HorizontalAlignment.LEFT);
-				cs.setDataFormat(createHelper.createDataFormat().getFormat(DATE_FORMAT));
-				cell.setCellStyle(cs);
+				cell.setCellStyle(csDate);
 				cell.setCellValue((Date)value);
 			}else if(value instanceof Calendar) {
-				CellStyle cs = wb.createCellStyle();
-				cs.cloneStyleFrom(cell.getCellStyle());
-				cs.setAlignment(HorizontalAlignment.LEFT);
-				cs.setDataFormat(createHelper.createDataFormat().getFormat(DATE_FORMAT));
+				cell.setCellStyle(csCal);
 				cell.setCellValue((Calendar)value);
 			}else if(value instanceof Double ) {
 				cell.setCellValue((double)value);

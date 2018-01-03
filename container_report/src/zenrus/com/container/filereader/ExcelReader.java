@@ -41,7 +41,7 @@ public class ExcelReader {
 		
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
 		Map<Integer,String> header = new HashMap<Integer,String>();
-       
+		String str = file.getName()+" - are reading";
 		try(	InputStream inputStream = new FileInputStream(file);
 				Workbook workbook = WorkbookFactory.create(new BufferedInputStream(inputStream));	){
 		      
@@ -85,8 +85,12 @@ public class ExcelReader {
 	            }
 	            result.add(row);
 	        }
+	        str = file.getName()+" - has been read";
 		}catch (Exception e) {
 			e.printStackTrace();
+			str = file.getName()+" - ERROR";
+		}finally {
+			LOG.info(str);
 		}
         
 		return result;
@@ -114,7 +118,9 @@ public class ExcelReader {
 						try {
 							return simpleDateFormat2.parse(cellValue.getStringValue());
 						}catch (ParseException e2) {
-							LOG.error("Date parse ERROR '" +  cellValue.getStringValue()+"'  format = " + DATE_INPUT_FILE_FORMAT, e2);
+							if(!"".equals(cellValue.getStringValue())) {
+								LOG.error("Date parse ERROR '" +  cellValue.getStringValue()+"'  format = " + DATE_INPUT_FILE_FORMAT, e2);
+							}
 							return null;
 						}
 					}
