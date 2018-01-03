@@ -3,6 +3,7 @@ package zenrus.com.container.report;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -34,6 +37,8 @@ import zenrus.com.container.persistance.HibernateControl;
 
 public class ReportContainersBuilder {
 
+	private static final Logger LOG = LogManager.getLogger( ReportContainersBuilder.class );
+	
 	private static final String TRAIN = "œÓÂÁ‰ ";
 
 	private static final String BTLC = "¡“À÷";
@@ -219,6 +224,8 @@ public class ReportContainersBuilder {
 		CellAddress feeBtlc = null;
 		CellAddress feeFormingKp = null;
 		List<Train> trains = HibernateControl.getTrains();
+		
+		sortTtrainsByNumber(trains);
 	 
 		CellStyle csR = wb.createCellStyle();
 		csR.cloneStyleFrom(doubleStyle);
@@ -307,6 +314,25 @@ public class ReportContainersBuilder {
 	 		}
 	 	}
 		return countOfContainers;
+	}
+
+	private void sortTtrainsByNumber(List<Train> trains) {
+		trains.sort(new Comparator<Train>() {
+			@Override
+			public int compare(Train o1, Train o2) {
+				Integer i1 = 0;
+				Integer i2 = 0;
+				try{
+					i1 = Integer.parseInt(o1.getTitle().split("_")[0]);
+					i2 = Integer.parseInt(o2.getTitle().split("_")[0]);
+				}catch (Exception e) {
+					LOG.error(e);
+				}
+				
+				return	i1 - i2;
+				
+			}
+		});
 	}
 
 	private CellStyle getBorderedStyle() {
