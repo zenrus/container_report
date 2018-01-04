@@ -1,9 +1,8 @@
-package zenrus.com.container.filereader;
+package zenrus.com.container.filereader.reader;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.Normalizer;
 import java.text.ParseException;
@@ -16,8 +15,6 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -28,8 +25,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import zenrus.com.container.exception.FileException;
+import zenrus.com.container.filereader.ExcelField;
+import zenrus.com.container.filereader.SourceControl;
 
-public class ExcelReader {
+public class ExcelReader extends SourceReader {
 
 	private static final Logger LOG = LogManager.getLogger( ExcelReader.class );
 	
@@ -37,17 +36,17 @@ public class ExcelReader {
 	private static final String DATE_INPUT_FILE_FORMAT2 = "dd/MM/yyyy H:mm";
 	
 
-	protected static List<Map<String,Object>> readExcel(File file, int headerRow, Class<?> beanClass) throws IOException, EncryptedDocumentException, InvalidFormatException {
+	protected List<Map<String,Object>> read(File file, int headerRow, Class<?> beanClass) throws Throwable {
 		
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
 		Map<Integer,String> header = new HashMap<Integer,String>();
-		String str = file.getName()+" - are reading";
+
 		try(	InputStream inputStream = new FileInputStream(file);
 				Workbook workbook = WorkbookFactory.create(new BufferedInputStream(inputStream));	){
 		      
 	        Sheet firstSheet = workbook.getSheetAt(0);
 	        Iterator<Row> iterator = firstSheet.iterator();
-	        Map<String, ExcelField> mapColumn = ExcelControl.getMapExcelToFieldExcel(beanClass); 
+	        Map<String, ExcelField> mapColumn = SourceControl.getMapExcelToFieldExcel(beanClass); 
 	        FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 	        int indexRow = 0; 
 	        while (iterator.hasNext()) {
@@ -85,18 +84,15 @@ public class ExcelReader {
 	            }
 	            result.add(row);
 	        }
-	        str = file.getName()+" - has been read";
-		}catch (Exception e) {
+		}catch (Throwable e) {
 			e.printStackTrace();
-			str = file.getName()+" - ERROR";
-		}finally {
-			LOG.info(str);
+			throw e; 
 		}
         
 		return result;
 	}
 	
-	private static Object getCellValue(CellValue cellValue, boolean date) throws FileException{
+	private Object getCellValue(CellValue cellValue, boolean date) throws FileException{
 		if (cellValue != null) {
 			switch (cellValue.getCellTypeEnum()) {
 			case BOOLEAN:
@@ -139,7 +135,7 @@ public class ExcelReader {
 		}
 	}
 	
-	private static String replaceUmlauts(String input) {
+	private String replaceUmlauts(String input) {
 		if (isReplaceUmlauts()) {
 			input = Normalizer.normalize(input, Normalizer.Form.NFD);
 			return input.replaceAll("\\p{M}", "");
@@ -148,16 +144,21 @@ public class ExcelReader {
 		}
 	}
 
-	private static boolean isReplaceUmlauts() {
+	private boolean isReplaceUmlauts() {
 		return false;
 	}
 	
-	protected static Object getCellValue(Cell cell, boolean date, FormulaEvaluator evaluator) throws FileException{
+	protected  Object getCellValue(Cell cell, boolean date, FormulaEvaluator evaluator) throws FileException{
 		if (cell != null) {
 			CellValue cellValue = evaluator.evaluate(cell);
 			return getCellValue(cellValue, date);
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	public String getTitleTrain() {
+		return getFileName().substring(0, getFileName().indexOf(' '));
 	}
 }

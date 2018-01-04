@@ -1,7 +1,6 @@
 package zenrus.com.container.filereader;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -13,27 +12,27 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import zenrus.com.container.annotation.ExcelColumn;
 import zenrus.com.container.beans.InputBean;
 import zenrus.com.container.exception.FileException;
+import zenrus.com.container.filereader.reader.SourceReader;
+import zenrus.com.container.filereader.reader.XMLReader;
 
-public class ExcelControl {
+public class SourceControl {
 
 	
-	private static final Logger LOG = LogManager.getLogger( ExcelControl.class );
+	private static final Logger LOG = LogManager.getLogger( SourceControl.class );
 	
 	public static List<InputBean> readInputfile(File excelFile) throws FileException{
 		List<InputBean> beans = new ArrayList<InputBean>();
 	
 		try {
 			Map<String, ExcelField> mapColumn = getMapExcelToFieldExcel(InputBean.class);
-			List<Map<String,Object>> excelRows = ExcelReader.readExcel(excelFile, 2, InputBean.class);
+			SourceReader reader = getReader();
+			List<Map<String,Object>> excelRows = reader.readFromFile(excelFile, 2, InputBean.class);
 			
-			String fileName = excelFile.getName();
-			String titleTrain = fileName.substring(0, fileName.indexOf(' '));
+			String titleTrain = reader.getTitleTrain();
 			for(Map<String, Object> row : excelRows){
 				//TODO End of data
 				if(row.get("¹ ï/ï") != null){
@@ -50,13 +49,17 @@ public class ExcelControl {
 					LOG.debug("");
 				}
 			}
-		
-		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (FileException e) {
+			LOG.error(e);
 			throw new FileException("Error read file" + excelFile.getName());
 		}
+		
 		return beans;
+	}
+
+	private static SourceReader getReader() {
+	//	return new ExcelReader();
+		return new XMLReader();
 	}
 	
 	private static void fill(InputBean bean, Map<String, Object> row, Map<String, ExcelField> mapColumn) throws FileException {

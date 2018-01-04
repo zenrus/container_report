@@ -31,7 +31,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import zenrus.com.container.beans.OutputBean;
 import zenrus.com.container.beans.Train;
 import zenrus.com.container.exception.DbException;
-import zenrus.com.container.filereader.ExcelControl;
+import zenrus.com.container.filereader.SourceControl;
 import zenrus.com.container.filereader.ExcelField;
 import zenrus.com.container.persistance.HibernateControl;
 
@@ -47,8 +47,8 @@ public class ReportContainersBuilder {
 	
 	private static final String TOTAL_REPORT_TITLE = "Всего за ";
 	private static final String DATE_FORMAT = "dd/MM/yyyy hh:mm";
-	private static final double FEE_ADDITIONAL_SERVICE = 25.00d;
-	private static final double FEE_FORMING_KP = 775.00d;
+	private static final double FEE_ADDITIONAL_SERVICE = 0.00d;
+	private static final double FEE_FORMING_KP = 0.00d;
 	private static final String TOTAL_TRAIN_TITLE = "Итого за поезд";
 	private static final String REPORT_TITLE_0 = "ОТЧЕТ за октябрь 2017 к договору  от 10.08.2015 № КП 20/Д043"; 
 	private static final String REPORT_TITLE_1 = "о выполнении по поручению Клиента дополнительных транспортно-экспедиционных услуг  в Брестском железнодорожном узле"; 
@@ -77,7 +77,7 @@ public class ReportContainersBuilder {
 	public ReportContainersBuilder(Workbook wb, Sheet sheet) {
 		this.setWb(wb);
 		this.setSheet(sheet);
-		this.setMapBeanToExcel(ExcelControl.getMapBeanToFieldExcel(OutputBean.class));
+		this.setMapBeanToExcel(SourceControl.getMapBeanToFieldExcel(OutputBean.class));
 	}
 	
 	public void build() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, DbException{
@@ -247,13 +247,13 @@ public class ReportContainersBuilder {
 		for(Train train : trains) {
 	 		short firstRow = rowNumber;
 	 		row = sheet.createRow(rowNumber++);
-	 		cell = row.createCell((short) 0);
+	 		cell = row.createCell((short) 7);
 	 		cell.setCellValue(getTitleColumn(train));	   
 	 		cell.setCellStyle(cellStyle);
 	 		
 	 		countOfContainers += train.getContainers().size();
 	 		
-	 		sheet.addMergedRegion(new CellRangeAddress(rowNumber-1,rowNumber-1,0,REPORT_COLUMNS.length-1));
+	 	//	sheet.addMergedRegion(new CellRangeAddress(rowNumber-1,rowNumber-1,0,REPORT_COLUMNS.length-1));
 	 		Set<String> vagonBTLC = new HashSet<String>();
 		 	for(OutputBean bean : train.getContainers()) {
 		 		if(!BTLC.equals(bean.getOwner()) || vagonBTLC.contains(bean.getVagonNumber()) ) {

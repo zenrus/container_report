@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import zenrus.com.container.beans.InputBean;
 import zenrus.com.container.exception.FileException;
+import zenrus.com.container.filereader.reader.ExcelReader;
 
 public class FileReader {
 
@@ -59,7 +60,7 @@ public class FileReader {
 		List<File> files = getFilesFromFolder(path);
 		List<InputBean> beans = new ArrayList<InputBean>();
 		for(File file : files){
-			beans.addAll(ExcelControl.readInputfile(file));
+			beans.addAll(SourceControl.readInputfile(file));
 			LOG.debug(file.getName());
 		}
 		return beans;
